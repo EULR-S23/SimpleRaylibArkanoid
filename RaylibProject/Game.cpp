@@ -82,7 +82,6 @@ void Game::Update(float deltaTime) {
 }
 
 void Game::CheckCollisions() {
-    // 1. Проверяем столкновения МЯЧЕЙ
     for (auto& ball : balls) {
         ball.CollideWithPaddle(paddle.GetRect());
 
@@ -136,18 +135,32 @@ void Game::Draw() const {
     }
 
     switch (state) {
-    case STATE_MENU:
-        DrawText("ARCANOID", SCREEN_WIDTH / 2 - 150 + 2, 150 + 2, 60, DARKGRAY);
-        DrawText("ARCANOID", SCREEN_WIDTH / 2 - 150, 150, 60, GOLD);
-        DrawText("Use A/D or Arrow Keys to move paddle", SCREEN_WIDTH / 2 - 180, 280, 20, LIGHTGRAY);
-        DrawText("Break all blocks to win!", SCREEN_WIDTH / 2 - 120, 310, 20, LIGHTGRAY);
-        DrawText("[ ENTER ] - Start Game", SCREEN_WIDTH / 2 - 110, 400, 24, GREEN);
-        DrawText("[ ESC ] - Exit", SCREEN_WIDTH / 2 - 70, 440, 20, RED);
-        DrawText("Power-ups:", SCREEN_WIDTH / 2 - 50, 520, 18, WHITE);
-        DrawText("W = Wide paddle | S = Slow ball | M = Multi-ball", SCREEN_WIDTH / 2 - 230, 545, 16, YELLOW);
-        break;
+    case STATE_MENU: {
+        int titleWidth = MeasureText("ARCANOID", 60);
+        DrawText("ARCANOID", SCREEN_WIDTH / 2 - titleWidth / 2 + 2, 150 + 2, 60, DARKGRAY);
+        DrawText("ARCANOID", SCREEN_WIDTH / 2 - titleWidth / 2, 150, 60, GOLD);
 
-    case STATE_GAMEPLAY:
+        int instr1Width = MeasureText("Use A/D or Arrow Keys to move paddle", 20);
+        DrawText("Use A/D or Arrow Keys to move paddle", SCREEN_WIDTH / 2 - instr1Width / 2, 280, 20, LIGHTGRAY);
+
+        int instr2Width = MeasureText("Break all blocks to win!", 20);
+        DrawText("Break all blocks to win!", SCREEN_WIDTH / 2 - instr2Width / 2, 310, 20, LIGHTGRAY);
+
+        int startWidth = MeasureText("[ ENTER ] - Start Game", 24);
+        DrawText("[ ENTER ] - Start Game", SCREEN_WIDTH / 2 - startWidth / 2, 400, 24, GREEN);
+
+        int exitWidth = MeasureText("[ ESC ] - Exit", 20);
+        DrawText("[ ESC ] - Exit", SCREEN_WIDTH / 2 - exitWidth / 2, 440, 20, RED);
+
+        int pwrTitleWidth = MeasureText("Power-ups:", 18);
+        DrawText("Power-ups:", SCREEN_WIDTH / 2 - pwrTitleWidth / 2, 520, 18, WHITE);
+
+        int pwrListWidth = MeasureText("W = Wide paddle | S = Slow ball | M = Multi-ball", 16);
+        DrawText("W = Wide paddle | S = Slow ball | M = Multi-ball", SCREEN_WIDTH / 2 - pwrListWidth / 2, 545, 16, YELLOW);
+        break;
+    }
+
+    case STATE_GAMEPLAY: {
         paddle.Draw();
         for (const auto& ball : balls) ball.Draw();
         for (const auto& b : blocks) b.Draw();
@@ -157,27 +170,52 @@ void Game::Draw() const {
         DrawText(TextFormat("SCORE: %05i", score), 10, 5, 20, WHITE);
         DrawText(TextFormat("LIVES: %i", lives), 200, 5, 20, WHITE);
         DrawText(TextFormat("BALLS: %i", (int)balls.size()), 350, 5, 20, WHITE);
-        DrawText("W=Wide S=Slow M=Multi", SCREEN_WIDTH - 200, 5, 16, YELLOW);
 
+        int legendWidth = MeasureText("W=Wide S=Slow M=Multi", 16);
+        DrawText("W=Wide S=Slow M=Multi", SCREEN_WIDTH - legendWidth - 10, 5, 16, YELLOW);
         break;
+    }
 
-    case STATE_GAMEOVER:
+    case STATE_GAMEOVER: {
         DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 0, 0, 0, 180 });
-        DrawText("GAME OVER", SCREEN_WIDTH / 2 - 150 + 3, 200 + 3, 50, BLACK);
-        DrawText("GAME OVER", SCREEN_WIDTH / 2 - 150, 200, 50, RED);
-        DrawText(TextFormat("Final Score: %i", score), SCREEN_WIDTH / 2 - 100, 280, 30, WHITE);
-        DrawText("[ R ] - Restart", SCREEN_WIDTH / 2 - 70, 400, 24, GREEN);
-        DrawText("[ M ] - Main Menu", SCREEN_WIDTH / 2 - 90, 440, 20, LIGHTGRAY);
-        break;
 
-    case STATE_VICTORY:
-        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 50, 40, 0, 180 });
-        DrawText("VICTORY!", SCREEN_WIDTH / 2 - 130 + 3, 180 + 3, 60, BLACK);
-        DrawText("VICTORY!", SCREEN_WIDTH / 2 - 130, 180, 60, GOLD);
-        DrawText(TextFormat("Final Score: %i", score), SCREEN_WIDTH / 2 - 100, 270, 30, WHITE);
-        DrawText("[ R ] - Play Again", SCREEN_WIDTH / 2 - 90, 400, 24, GREEN);
-        DrawText("[ M ] - Main Menu", SCREEN_WIDTH / 2 - 90, 440, 20, LIGHTGRAY);
+        int overWidth = MeasureText("GAME OVER", 50);
+        DrawText("GAME OVER", SCREEN_WIDTH / 2 - overWidth / 2 + 3, 200 + 3, 50, BLACK);
+        DrawText("GAME OVER", SCREEN_WIDTH / 2 - overWidth / 2, 200, 50, RED);
+
+        const char* finalScore = TextFormat("Final Score: %i", score);
+        int scoreWidth = MeasureText(finalScore, 30);
+        DrawText(finalScore, SCREEN_WIDTH / 2 - scoreWidth / 2, 280, 30, WHITE);
+
+        int restartWidth = MeasureText("[ R ] - Restart", 24);
+        DrawText("[ R ] - Restart", SCREEN_WIDTH / 2 - restartWidth / 2, 400, 24, GREEN);
+
+        int menuWidth = MeasureText("[ M ] - Main Menu", 20);
+        DrawText("[ M ] - Main Menu", SCREEN_WIDTH / 2 - menuWidth / 2, 440, 20, LIGHTGRAY);
         break;
+    }
+
+    case STATE_VICTORY: {
+        DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, { 50, 40, 0, 180 });
+
+        int victoryWidth = MeasureText("VICTORY!", 60);
+        DrawText("VICTORY!", SCREEN_WIDTH / 2 - victoryWidth / 2 + 3, 180 + 3, 60, BLACK);
+        DrawText("VICTORY!", SCREEN_WIDTH / 2 - victoryWidth / 2, 180, 60, GOLD);
+
+        const char* finalScoreV = TextFormat("Final Score: %i", score);
+        int scoreVWidth = MeasureText(finalScoreV, 30);
+        DrawText(finalScoreV, SCREEN_WIDTH / 2 - scoreVWidth / 2, 270, 30, WHITE);
+
+        int winTextWidth = MeasureText("You destroyed all blocks!", 20);
+        DrawText("You destroyed all blocks!", SCREEN_WIDTH / 2 - winTextWidth / 2, 320, 20, LIGHTGRAY);
+
+        int againWidth = MeasureText("[ R ] - Play Again", 24);
+        DrawText("[ R ] - Play Again", SCREEN_WIDTH / 2 - againWidth / 2, 400, 24, GREEN);
+
+        int menuVWidth = MeasureText("[ M ] - Main Menu", 20);
+        DrawText("[ M ] - Main Menu", SCREEN_WIDTH / 2 - menuVWidth / 2, 440, 20, LIGHTGRAY);
+        break;
+    }
     }
     EndDrawing();
 }
