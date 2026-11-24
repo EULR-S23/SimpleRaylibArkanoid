@@ -1,6 +1,7 @@
-# Arkanoid
+# Arcanoid
+<img width="793" height="627" alt="image" src="https://github.com/user-attachments/assets/c6a218cd-8483-4c51-bf24-18257bbb43b0" />
 
-Just a classical Arkanoid made for fun and to get out of student debt.
+Just a classical Arkanoid-like game made for fun and to get out of student debt.
 
 ## 🛠 Tech Stack
 *   **Language:** C++
